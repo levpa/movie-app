@@ -57,7 +57,7 @@ stages:
     - task: AzureRmWebAppDeployment@4
       inputs:
         ConnectionType: 'AzureRM'
-        azureSubscription: 'AzDO'
+        azureSubscription: 'AzureSC'
         WebAppName: 'csweb08012021'
         package: '$(Pipeline.Workspace)/**/*.zip'
         WebAppKind: WebApp
