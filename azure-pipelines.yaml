@@ -59,5 +59,7 @@ stages:
         ConnectionType: 'AzureRM'
         azureSubscription: 'AzureSC'
         WebAppName: 'csweb08012021'
+        DeployToSlotOrASEFlag: True
+        SlotName: staging
         package: '$(Pipeline.Workspace)/**/*.zip'
         WebAppKind: WebApp
