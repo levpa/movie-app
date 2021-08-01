@@ -5,6 +5,7 @@ trigger:
     - master
 variables:
   buildConfiguration: 'Release'
+  vmImageName: 'Ubuntu-20.04'
   
 stages:
 
@@ -13,7 +14,7 @@ stages:
   jobs:
   - job: BuildAndTest
     pool:
-      vmImage: 'Ubuntu-16.04'
+      vmImage: $(vmImageName)
     steps:
     # Build and publish the application library
     - task: DotNetCoreCLI@2
@@ -43,7 +44,7 @@ stages:
   jobs:
   - job: Release
     pool:
-      vmImage: 'Ubuntu-16.04'
+      vmImage: $(vmImageName)
     steps:
     # Don't clone the repo
     - checkout: none
@@ -57,6 +58,6 @@ stages:
       inputs:
         ConnectionType: 'AzureRM'
         azureSubscription: 'AzDO'
-        WebAppName: 'csweb03252020'
+        WebAppName: 'csweb08012021'
         package: '$(Pipeline.Workspace)/**/*.zip'
         WebAppKind: WebApp
