@@ -8,9 +8,21 @@ variables:
   vmImageName: 'Ubuntu-20.04'
   
 stages:
-
+- stage: scan
+  jobs:
+    - job: analysis
+      steps:
+        - script: echo " code static analysis ........ "
+        - task: PowerShell@2
+          inputs:
+            targetType: 'inline'
+            script: |
+              Write-Host " Files in the directory: "
+              Write-Host "$(Build.SourcesDirectory"
+              Get-ChildItem $(Build.SourcesDirectory)
 # Build Stage
 - stage: BuildAndTest
+  dependsOn: scan
   jobs:
   - job: BuildAndTest
     pool:
@@ -53,14 +65,14 @@ stages:
     - download: current
       artifact: app
 
-    # Release the app
-    - task: AzureRmWebAppDeployment@4
-      inputs:
-        ConnectionType: 'AzureRM'
-        azureSubscription: 'AzureSC'
-        WebAppName: 'csweb08012021'
-        ResourceGroupName: csweb-rg
-        DeployToSlotOrASEFlag: True
-        SlotName: staging
-        package: '$(Pipeline.Workspace)/**/*.zip'
-        WebAppKind: WebApp
+    # # Release the app
+    # - task: AzureRmWebAppDeployment@4
+    #   inputs:
+    #     ConnectionType: 'AzureRM'
+    #     azureSubscription: 'AzureSC'
+    #     WebAppName: 'csweb08012021'
+    #     ResourceGroupName: csweb-rg
+    #     DeployToSlotOrASEFlag: True
+    #     SlotName: staging
+    #     package: '$(Pipeline.Workspace)/**/*.zip'
+    #     WebAppKind: WebApp
