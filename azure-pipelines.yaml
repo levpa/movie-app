@@ -8,7 +8,7 @@ variables:
   vmImageName: 'Ubuntu-20.04'
   
 stages:
-- stage: scan
+- stage: scanCode
   jobs:
     - job: analysis
       steps:
@@ -20,9 +20,10 @@ stages:
               Write-Host " Files in the directory: "
               Write-Host "$(Build.SourcesDirectory"
               Get-ChildItem $(Build.SourcesDirectory)
+
 # Build Stage
 - stage: BuildAndTest
-  dependsOn: scan
+  dependsOn: scanCode
   jobs:
   - job: BuildAndTest
     pool:
@@ -65,14 +66,16 @@ stages:
     - download: current
       artifact: app
 
-    # # Release the app
-    # - task: AzureRmWebAppDeployment@4
-    #   inputs:
-    #     ConnectionType: 'AzureRM'
-    #     azureSubscription: 'AzureSC'
-    #     WebAppName: 'csweb08012021'
-    #     ResourceGroupName: csweb-rg
-    #     DeployToSlotOrASEFlag: True
-    #     SlotName: staging
-    #     package: '$(Pipeline.Workspace)/**/*.zip'
-    #     WebAppKind: WebApp
+    # Release the app
+    - task: AzureRmWebAppDeployment@4
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: 'AzureSC'
+        WebAppName: 'csweb08012021'
+        ResourceGroupName: csweb-rg
+        DeployToSlotOrASEFlag: True
+        SlotName: staging
+        package: '$(Pipeline.Workspace)/**/*.zip'
+        WebAppKind: WebApp
+
+    # Second option it's release with Bicep templates to several environments
